@@ -7,7 +7,7 @@ const app = require("../server.js");
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-describe('html page', function() {
+describe('index page', function() {
     it("should contain Hello World", function() {
         return chai
             .request(app)
