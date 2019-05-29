@@ -11,7 +11,7 @@ let MOCK_COFFEE_REVIEWS = {
     {
         "id": "22222",
         "roasters": "Temple Coffee Roasters",
-        "beansOriginin": "Colombia",
+        "beansOrigin": "Colombia",
         "flavorNotes": ["nutty", "lavender", "citrus"],
         "brewMethod": "Kalita",
         "description": "Here is some filler. I love coffee. It keeps me productive. It wakes me up. It pushes me to new limits. It is a nectar I cherish."
@@ -19,7 +19,7 @@ let MOCK_COFFEE_REVIEWS = {
     {
         "id": "33333",
         "roasters": "Augie's Coffee Roasters",
-        "beansOriginin": "Guatemala",
+        "beansOrigin": "Guatemala",
         "flavorNotes": ["grapefruit", "zucchini", "citrus"],
         "brewMethod": "French Press",
         "description": "Here is some filler. I love coffee. It keeps me productive. It wakes me up. It pushes me to new limits. It is a nectar I cherish."
@@ -27,7 +27,7 @@ let MOCK_COFFEE_REVIEWS = {
     {
         "id": "44444",
         "roasters": "Augie's Coffee Roasters",
-        "beansOriginin": "Brazil",
+        "beansOrigin": "Brazil",
         "flavorNotes": ["chocolate", "caramel", "nutty"],
         "brewMethod": "V60",
         "description": "Here is some filler. I love coffee. It keeps me productive. It wakes me up. It pushes me to new limits. It is a nectar I cherish."
@@ -42,13 +42,26 @@ setTimeout(function() {callback(MOCK_COFFEE_REVIEWS)}, 1);
 function displayCoffeeReviews(data) {
 for (index in data.coffeeReviews) {
     $('body').append(
+        '<div class="review-div">' +
         '<p>Roasters: ' + data.coffeeReviews[index].roasters + '</p>' +
         '<p>Beans Origin: ' + data.coffeeReviews[index].beansOrigin + '</p>' +
         '<p>Flavor Notes: ' + data.coffeeReviews[index].flavorNotes + '</p>' +
         '<p>Brew Method: ' + data.coffeeReviews[index].brewMethod + '</p>' +
-        '<p>Description: ' + data.coffeeReviews[index].description + '</p>');
+        '<p>Description: ' + data.coffeeReviews[index].description + '</p></div>');
         console.log(data.coffeeReviews);
+    }
+
 }
+
+function redirectToCreatePage() {
+    window.location.href = '/create.html';
+}
+
+function renderCreatePage() {
+    $(".create-review").submit(event => {
+        event.preventDefault();
+        redirectToCreatePage();
+    });
 
 }
 
@@ -58,4 +71,5 @@ getCoffeeReviews(displayCoffeeReviews);
 
 $(function() {
 getAndDisplayCoffeeReviews();
+renderCreatePage();
 })
