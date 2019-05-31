@@ -53,18 +53,6 @@ for (index in data.coffeeReviews) {
 
 }
 
-function redirectToCreatePage() {
-    window.location.href = '/create.html';
-}
-
-function renderCreatePage() {
-    $(".create-review").submit(event => {
-        event.preventDefault();
-        redirectToCreatePage();
-    });
-
-}
-
 function getAndDisplayCoffeeReviews() {
 getCoffeeReviews(displayCoffeeReviews);
 }
