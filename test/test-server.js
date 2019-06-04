@@ -11,7 +11,7 @@ describe('index page', function() {
     it("should exist", function() {
         return chai
             .request(app)
-            .get("/index.html)
+            .get("/index.html")
             .then(function(res) {
                 expect(res).to.have.status(200);
             });
