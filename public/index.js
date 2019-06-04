@@ -2,6 +2,7 @@ let MOCK_COFFEE_REVIEWS = {
     "coffeeReviews": [
     {
         "id": "11111",
+        "title": "Ethiopia from Augie's",
         "roasters": "Augie's Coffee Roasters",
         "beansOrigin": "Ethiopia",
         "flavorNotes": ["caramel", "cherry", "citrus"],
@@ -10,6 +11,7 @@ let MOCK_COFFEE_REVIEWS = {
     },
     {
         "id": "22222",
+        "title": "Colombia from Temple",
         "roasters": "Temple Coffee Roasters",
         "beansOrigin": "Colombia",
         "flavorNotes": ["nutty", "lavender", "citrus"],
@@ -18,6 +20,7 @@ let MOCK_COFFEE_REVIEWS = {
     },
     {
         "id": "33333",
+        "title": "Guatemala from Augie's",
         "roasters": "Augie's Coffee Roasters",
         "beansOrigin": "Guatemala",
         "flavorNotes": ["grapefruit", "zucchini", "citrus"],
@@ -26,6 +29,7 @@ let MOCK_COFFEE_REVIEWS = {
     },
     {
         "id": "44444",
+        "title": "Brazil from Augie's",
         "roasters": "Augie's Coffee Roasters",
         "beansOrigin": "Brazil",
         "flavorNotes": ["chocolate", "caramel", "nutty"],
@@ -50,7 +54,6 @@ for (index in data.coffeeReviews) {
         '<p>Description: ' + data.coffeeReviews[index].description + '</p></div>');
         console.log(data.coffeeReviews);
     }
-
 }
 
 function getAndDisplayCoffeeReviews() {
