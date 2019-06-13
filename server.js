@@ -3,10 +3,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
 mongoose.Promise = global.Promise;
 
 const { PORT, DATABASE_URL } = require("./config");
+
+console.log(process.env.DATABASE_URL);
+console.log(PORT);
 
 const brewsRouter = require('./routers/brewsRouter');
 const authRouter = require('./routers/authRouter');
@@ -16,6 +20,10 @@ const app = express();
 app.use(express.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
+app.use(bodyParser.json());
+
+app.use('/coffee-brew-reviews', brewsRouter);
+
 
 let server;
 function runServer(databaseUrl, port = PORT,) {
