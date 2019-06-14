@@ -1,15 +1,16 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const brewSchema = mongoose.Schema({
-    title: {type: String, required: true},
-    roasters: {type: String},
-    beansOrigin: {type: String},
-    flavorNotes: {type: Array, default: []},
-    brewMethod: {type: String},
-    description: {type: String},
-    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
+const brewSchema = new Schema({
+    title:  {type: String, required: true},
+    roasters: {type: String, required: true},
+    beansOrigin: {type: String, required: true},
+    flavorNotes: {type: [String], default: undefined},
+    brewMethod: {type: String, required: true},
+    description: {type: String, required: true}
+    //userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
 brewSchema.methods.serialize = function() {

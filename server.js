@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -8,9 +9,6 @@ const bodyParser = require('body-parser');
 mongoose.Promise = global.Promise;
 
 const { PORT, DATABASE_URL } = require("./config");
-
-console.log(process.env.DATABASE_URL);
-console.log(PORT);
 
 const brewsRouter = require('./routers/brewsRouter');
 const authRouter = require('./routers/authRouter');
@@ -22,14 +20,14 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-app.use('/coffee-brew-reviews', brewsRouter);
+app.use('/brews', brewsRouter);
 
 
 let server;
-function runServer(databaseUrl, port = PORT,) {
+function runServer(DATABASE_URL, port = PORT,) {
     return new Promise((resolve, reject) => {
         mongoose.connect(
-            databaseUrl, { useNewUrlParser: true}, 
+            DATABASE_URL, { useNewUrlParser: true}, 
             err => {
                 if (err) {
                     return reject(err);
