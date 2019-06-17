@@ -25,15 +25,37 @@ router.get('/', (req, res) => {
         });
 });
 
-router.post('/', async (req, res) => {
-    const brew = new Brew(req.body);
-    try {
-        await brew.save();
-        res.status(201).json(brew);
-    } catch(err) {
-        res.status(500).json({message: 'Internal server error'});
+router.post('/', (req, res) => {
+    const requiredFields = ['title', 'content', 'author'];
+    for (let i = 0; i < requiredFields.length; i++) {
+      const field = requiredFields[i];
+      if (!(field in req.body)) {
+        const message = `Missing \`${field}\` in request body`;
+        console.error(message);
+        return res.status(400).send(message);
+      }
     }
 
+    Brew
+        .create({
+            title: req.body.title,
+            roasters: req.body.roasters,
+            beansOrigin: req.body.beansOrigin,
+            flavorNotes: req.body.flavorNotes,
+            brewMethod: req.body.brewMethod,
+            description: req.body.description
+        })
+        .then()
 })
+// router.post('/', async (req, res) => {
+//     const brew = new Brew(req.body);
+//     try {
+//         await brew.save();
+//         res.status(201).json(brew);
+//     } catch(err) {
+//         res.status(500).json({message: 'Internal server error'});
+//     }
+
+// })
 
 module.exports = router;
