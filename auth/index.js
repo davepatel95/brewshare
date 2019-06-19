@@ -1,6 +1,6 @@
 'use strict';
 
-const { } = require('../routers/authRouter');
-const { } = require('./strategies');
+const {router} = require('../routers/authRouter');
+const { localStrategy, jwtStrategy } = require('./strategies');
 
-module.exports = { };
+module.exports = { router, localStrategy, jwtStrategy };
