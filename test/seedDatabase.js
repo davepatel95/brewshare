@@ -23,6 +23,15 @@ function seedBrewData() {
     });
 }
 
+function tearDownDb() {
+    return new Promise((resolve, reject) => {
+        mongoose.connection
+            .dropDatabase()
+            .then(result => resolve(result))
+            .catch(err => reject(err));
+    });
+}
+
 function generateBrewData() {
     return {
         title: faker.name.title(),
