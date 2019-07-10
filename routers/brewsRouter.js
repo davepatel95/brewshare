@@ -3,14 +3,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
-// const passport = require('passport');
+const passport = require('passport');
 mongoose.Promise = global.Promise;
 
-
+const { jwtStrategy } = require('../auth/strategies');
 const {Brew} = require('../models/brews');
 
+passport.use(jwtStrategy);
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/', (req, res) => {
+router.get('/', jwtAuth, (req, res) => {
      Brew
         .find()
         .then(brews => {
