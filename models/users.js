@@ -37,4 +37,4 @@ UserSchema.statics.hashPassword = function(password) {
 
 const User = mongoose.model('User', UserSchema);
 
-model.exports = {User};
+module.exports = {User};
