@@ -38,7 +38,7 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
         });
 });
 
-console.log(JWT_SECRET);
+console.log(process.env.JWT_SECRET);
 const jwtStrategy = new JwtStrategy(
     {
         secretOrKey: process.env.JWT_SECRET,
