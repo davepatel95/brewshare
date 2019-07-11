@@ -1,8 +1,6 @@
 'use strict';
 require('dotenv').config();
 
-const JWT_SECRET = require('./config');
-
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
@@ -10,7 +8,7 @@ const bodyParser = require('body-parser');
 
 mongoose.Promise = global.Promise;
 
-const { PORT, DATABASE_URL } = require("./config");
+const { PORT, DATABASE_URL, JWT_SECRET } = require("./config");
 
 const brewsRouter = require('./routers/brewsRouter');
 const authRouter = require('./routers/authRouter');

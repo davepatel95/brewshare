@@ -41,7 +41,7 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
 console.log(process.env.JWT_SECRET);
 const jwtStrategy = new JwtStrategy(
     {
-        secretOrKey: process.env.JWT_SECRET,
+        secretOrKey: JWT_SECRET,
         jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('JWT'),
         algorithms: ['HS256']
     },
