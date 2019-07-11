@@ -1,6 +1,8 @@
 'use strict';
 require('dotenv').config();
 
+const JWT_SECRET = require('./config');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
@@ -22,6 +24,7 @@ app.use(bodyParser.json());
 
 app.use('/brews', brewsRouter);
 
+console.log(process.env.JWT_SECRET);
 
 let server;
 function runServer(DATABASE_URL, port = PORT,) {
