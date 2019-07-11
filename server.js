@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 mongoose.Promise = global.Promise;
 
-const { PORT, DATABASE_URL, JWT_SECRET } = require("./config");
+const { PORT, DATABASE_URL } = require("./config");
 
 const brewsRouter = require('./routers/brewsRouter');
 const authRouter = require('./routers/authRouter');

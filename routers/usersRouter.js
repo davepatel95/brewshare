@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
             location: missingField
         });
     }
-
+    
     const stringFields = ['FirstName', 'lastName', 'password', 'email'];
     const nonStringField = stringFields.find(
         field => field in req.body && typeof req.body[field] !== 'string'

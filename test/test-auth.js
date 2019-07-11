@@ -3,8 +3,10 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
+const { User } = require('../models/users');
+
 const { app, runServer, closeServer } = require('../server');
-const { seedDatabase, tearDownDb } = require('./seedDatabase');
+const { seedBrewData, tearDownDb } = require('./seedDatabase');
 const { TEST_DATABASE_URL } = require('../config');
 const { expect } = chai;
 
@@ -16,7 +18,7 @@ describe('Auth', function() {
     });
 
     beforeEach(function() {
-        return seedDatabase();
+        return seedBrewData();
     });
 
     afterEach(function() {
@@ -27,5 +29,6 @@ describe('Auth', function() {
         return closeServer();
     });
 
+    
 
 })
