@@ -24,7 +24,6 @@ app.use(bodyParser.json());
 
 app.use('/brews', brewsRouter);
 
-console.log(process.env.JWT_SECRET);
 
 let server;
 function runServer(DATABASE_URL, port = PORT,) {
