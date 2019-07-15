@@ -4,23 +4,26 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
+const passport = require('passport');
 
 mongoose.Promise = global.Promise;
-
 const { PORT, DATABASE_URL } = require("./config");
+const app = express();
 
 const brewsRouter = require('./routers/brewsRouter');
 const authRouter = require('./routers/authRouter');
 const userRouter = require('./routers/usersRouter');
+const { localStrategy, jwtStrategy } = require('./auth/strategies');
 
-const app = express();
 app.use(express.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
-app.use(bodyParser.json());
-
 app.use('/brews', brewsRouter);
+app.use('/auth', authRouter);
+app.use('/users', userRouter);
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 
 let server;
