@@ -8,12 +8,13 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('index page', function() {
-    it("should exist", function() {
+    it("should send html", function() {
         return chai
             .request(app)
             .get("/index.html")
             .then(function(res) {
                 expect(res).to.have.status(200);
+                expect(res).to.be.html;
             });
     });
 });

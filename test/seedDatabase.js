@@ -9,6 +9,14 @@ const { User } = require('../models/users');
 function seedDatabase() {
     return new Promise((resolve, reject) => {
         seedUserData()
+            .then(users => {
+                let userIdArray = users.map(user => user._id);
+                return seedBrewData(userIdArray);
+            })
+            .then(brews => {
+                resolve(brews);
+            })
+            .catch(err => reject(err));
     });
 }
 
@@ -70,7 +78,7 @@ function seedBrewData(userIdArray) {
         for (let i = 1; i <= 2; i++) {
             seedData.push(generateBrewData(userIdArray));
         }
-        User.insertMany(seedData)
+        Brews.insertMany(seedData)
             .then(res => {
                 resolve(res);
             })
@@ -99,4 +107,11 @@ function generateFlavorNotes() {
     return flavorNotes[Math.floor(Math.random() * flavorNotes.length)];
 }
 
-module.exports = {};
+module.exports = {
+    seedDatabase,
+    tearDownDb,
+    generateUserData,
+    generateBrewData,
+    generateFlavorNotes,
+    preAuthUser
+};
