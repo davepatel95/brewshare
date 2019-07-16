@@ -8,7 +8,7 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('index page', function() {
-    it("should send html", function() {
+    it("should send html for landing page", function() {
         return chai
             .request(app)
             .get("/index.html")
@@ -20,7 +20,7 @@ describe('index page', function() {
 });
 
 describe('create page', function() {
-    it("should exist", function() {
+    it("should send html for create brew page", function() {
         return chai
             .request(app)
             .get("/create.html")
@@ -30,35 +30,14 @@ describe('create page', function() {
     });
 });
 
-describe('css page', function() {
-    it("should exist", function() {
+describe('login page', function() {
+    it("should send html for login page", function() {
         return chai
             .request(app)
-            .get("/index.css")
+            .get("/login")
             .then(function(res) {
                 expect(res).to.have.status(200);
+                expect(res).to.be.html;
             });
     });
-});
-
-describe('index js page', function() {
-    it("should exist", function() {
-        return chai
-            .request(app)
-            .get("/index.js")
-            .then(function(res) {
-                expect(res).to.have.status(200);
-            });
-    });
-});
-
-describe('review page', function() {
-    it("should exist", function() {
-        return chai
-            .request(app)
-            .get("/login.html")
-            .then(function(res) {
-                expect(res).to.have.status(200);
-            });
-    });
-});
+})
