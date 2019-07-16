@@ -25,6 +25,9 @@ app.use('/users', userRouter);
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
+app.use('*', (req, res) => {
+    return res.status(404).json({ message: "Not Found" });
+});
 
 let server;
 function runServer(DATABASE_URL, port = PORT,) {

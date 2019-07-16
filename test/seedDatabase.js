@@ -4,16 +4,31 @@ const mongoose = require('mongoose');
 const faker = require('faker');
 
 const { Brews } = require('../models/brews');
+const { User } = require('../models/users');
 
-function seedBrewData() {
+function seedDatabase() {
+
+}
+
+function tearDownDb() {
     return new Promise((resolve, reject) => {
-        let testBrew = generateBrewData();
-        Brews.hashPassword(testBrew.plainPassword)
+        mongoose.connection
+            .dropDatabase()
+            .then(result => resolve(result))
+            .catch(err => reject(err));
+    });
+}
+
+//User Data Functions
+function seedUserData() {
+    return new Promise((resolve, reject) => {
+        let testUser = generateUserData();
+        User.hashPassword(testUser.plainPassword)
             .then(hash => {
-                testBrew.password = hash;
-                return Brew.create(testBrew);
+                testUser.password = hash;
+                return User.create(testUser);
             })
-            then(res => {
+            .then(res => {
                 resolve([res]);
             })
             .catch(err => {
@@ -23,12 +38,43 @@ function seedBrewData() {
     });
 }
 
-function tearDownDb() {
+function generateUserData() {
+    return {
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+        email: faker.internet.email(),
+        password: "123Password",
+        plainPassword: "123Password"
+    };
+}
+
+const preAuthUser = function(user) {
+    const plainPassword = "123Password";
+    return {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        plainPassword: plainPassword,
+        userId: String(user._id)
+    };
+};
+
+//Brew Data Functions
+
+function seedBrewData(userIdArray) {
     return new Promise((resolve, reject) => {
-        mongoose.connection
-            .dropDatabase()
-            .then(result => resolve(result))
-            .catch(err => reject(err));
+        const seedData = [];
+        for (let i = 1; i <= 2; i++) {
+            seedData.push(generateBrewData(userIdArray));
+        }
+        User.insertMany(seedData)
+            .then(res => {
+                resolve(res);
+            })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            });
     });
 }
 
@@ -50,8 +96,4 @@ function generateFlavorNotes() {
     return flavorNotes[Math.floor(Math.random() * flavorNotes.length)];
 }
 
-module.exports = {
-    seedBrewData,
-    generateBrewData,
-    generateFlavorNotes
-};
+module.exports = {};
