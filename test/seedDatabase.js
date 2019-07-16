@@ -7,7 +7,9 @@ const { Brews } = require('../models/brews');
 const { User } = require('../models/users');
 
 function seedDatabase() {
-
+    return new Promise((resolve, reject) => {
+        seedUserData()
+    });
 }
 
 function tearDownDb() {
@@ -20,6 +22,7 @@ function tearDownDb() {
 }
 
 //User Data Functions
+
 function seedUserData() {
     return new Promise((resolve, reject) => {
         let testUser = generateUserData();
