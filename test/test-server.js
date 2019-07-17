@@ -34,7 +34,7 @@ describe('login page', function() {
     it("should send html for login page", function() {
         return chai
             .request(app)
-            .get("/login")
+            .get("/login.html")
             .then(function(res) {
                 expect(res).to.have.status(200);
                 expect(res).to.be.html;
