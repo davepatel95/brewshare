@@ -38,7 +38,7 @@ const localStrategy = new LocalStrategy((username, password, callback) => {
         });
 });
 
-console.log(JWT_SECRET);
+
 const jwtStrategy = new JwtStrategy(
     {
         secretOrKey: JWT_SECRET,

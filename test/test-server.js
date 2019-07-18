@@ -10,35 +10,37 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 
-// describe('Server', function() {
-//     before(function() {
-//         return runServer(TEST_DATABASE_URL);
-//     });
+describe('Server', function() {
+    before(function() {
+        return runServer(TEST_DATABASE_URL);
+    });
 
-//     beforeEach(function() {
-//         return seedDatabase();
-//     });
+    beforeEach(function() {
+        return seedDatabase();
+    });
 
-//     afterEach(function() {
-//         return tearDownDb();
-//     });
+    afterEach(function() {
+        return tearDownDb();
+    });
 
-//     after(function() {
-//         return closeServer();
-//     });
+    after(function() {
+        return closeServer();
+    });
 
-//     describe('index page', function() {
-//         it("should send html for landing page", function() {
-//             return chai
-//                 .request(app)
-//                 .get("/index.html")
-//                 .then(function(res) {
-//                     expect(res).to.have.status(200);
-//                     expect(res).to.be.html;
-//                 });
-//         });
-//     });
-// });
+    describe('index page', function() {
+        it("should send html for landing page", function() {
+            return chai
+                .request(app)
+                .get('/')
+                .then(function(res) {
+                    expect(res).to.have.status(200);
+                    expect(res).to.be.html;
+                });
+        });
+    });
+
+    describe('')
+});
 
 
 
@@ -54,7 +56,7 @@ describe('create page', function() {
     it("should send html for create brew page", function() {
         return chai
             .request(app)
-            .get("/create.html")
+            .get('/')
             .then(function(res) {
                 expect(res).to.have.status(200);
             });
