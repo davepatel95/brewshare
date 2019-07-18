@@ -3,7 +3,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
-const { User } = require('../models/users');
+const { User } = require('../users/models');
 
 const { app, runServer, closeServer } = require('../server');
 const { seedBrewData, tearDownDb } = require('./seedDatabase');

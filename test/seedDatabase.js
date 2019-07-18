@@ -3,8 +3,8 @@
 const mongoose = require('mongoose');
 const faker = require('faker');
 
-const { Brews } = require('../models/brews');
-const { User } = require('../models/users');
+const { Brews } = require('../brews/models');
+const { User } = require('../users/models');
 
 function seedDatabase() {
     return new Promise((resolve, reject) => {

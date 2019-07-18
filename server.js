@@ -10,9 +10,9 @@ mongoose.Promise = global.Promise;
 const { PORT, DATABASE_URL } = require("./config");
 const app = express();
 
-const brewsRouter = require('./routers/brewsRouter');
-const authRouter = require('./routers/authRouter');
-const userRouter = require('./routers/usersRouter');
+const brewsRouter = require('./brews/router');
+const authRouter = require('./auth/router');
+const userRouter = require('./users/router');
 const { localStrategy, jwtStrategy } = require('./auth/strategies');
 
 app.use(express.json());

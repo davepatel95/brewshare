@@ -8,7 +8,7 @@ const passport = require('passport');
 mongoose.Promise = global.Promise;
 
 const { jwtStrategy } = require('../auth/strategies');
-const {Brew} = require('../models/brews');
+const {Brew} = require('./models');
 
 passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
