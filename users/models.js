@@ -15,7 +15,7 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    firstName: {type: String, default:''},
+    firstName: {type: String, default: ''},
     lastName: {type: String, default: ''}
 });
 
@@ -37,4 +37,4 @@ UserSchema.statics.hashPassword = function(password) {
 
 const User = mongoose.model('User', UserSchema);
 
-model.exports = {User};
+module.exports = {User};
