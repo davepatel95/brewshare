@@ -4,24 +4,30 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
-const bodyParser = require('body-parser');
+const passport = require('passport');
 
 mongoose.Promise = global.Promise;
-
 const { PORT, DATABASE_URL } = require("./config");
-
-const brewsRouter = require('./routers/brewsRouter');
-const authRouter = require('./routers/authRouter');
-const userRouter = require('./routers/usersRouter');
-
 const app = express();
+
+const brewsRouter = require('./brews/router');
+const authRouter = require('./auth/router');
+const userRouter = require('./users/router');
+const { localStrategy, jwtStrategy } = require('./auth/strategies');
+
 app.use(express.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
-app.use(bodyParser.json());
-
 app.use('/brews', brewsRouter);
+app.use('/auth', authRouter);
+app.use('/users', userRouter);
 
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+app.use('*', (req, res) => {
+    return res.status(404).json({ message: "Not Found" });
+});
 
 let server;
 function runServer(DATABASE_URL, port = PORT,) {
