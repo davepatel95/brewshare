@@ -35,7 +35,7 @@ describe('Auth endpoints', function() {
     });
 
     afterEach(function() {
-        return User.remove({});
+        return User.deleteOne({});
     });
 
     after(function() {
@@ -57,7 +57,7 @@ describe('Auth endpoints', function() {
                 });
         });
 
-        
+
     })
     
 
