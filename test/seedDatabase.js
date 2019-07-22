@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const faker = require('faker');
 
-const { Brews } = require('../brews/models');
+const { Brew } = require('../brews/models');
 const { User } = require('../users/models');
 
 function seedDatabase() {
@@ -78,7 +78,7 @@ function seedBrewData(userIdArray) {
         for (let i = 0; i <= 2; i++) {
             seedData.push(generateBrewData(userIdArray));
         }
-        Brews.insertMany(seedData)
+        Brew.insertMany(seedData)
             .then(res => {
                 resolve(res);
             })
