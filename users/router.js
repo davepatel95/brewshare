@@ -9,7 +9,7 @@ const router = express.Router();
 const { User } = require('./models');
 
 router.post('/', jsonParser, (req, res) => {
-    const requiredFields = ['firstName', 'lastName', 'password', 'email'];
+    const requiredFields = ['firstName', 'lastName', 'password', 'username'];
     const missingField = requiredFields.find(field => !(field in req.body));
     if (missingField) {
         console.log('Missing Field');
@@ -21,7 +21,7 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
     
-    const stringFields = ['FirstName', 'lastName', 'password', 'email'];
+    const stringFields = ['FirstName', 'lastName', 'password', 'username'];
     const nonStringField = stringFields.find(
         field => field in req.body && typeof req.body[field] !== 'string'
     );
@@ -36,7 +36,7 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
 
-    const explicitlyTrimmedFields = ['email', 'password'];
+    const explicitlyTrimmedFields = ['username', 'password'];
     const nonTrimmedField = explicitlyTrimmedFields.find(
         field => req.body[field].trim() !== req.body[field]
     );
@@ -58,7 +58,7 @@ router.post('/', jsonParser, (req, res) => {
         lastName: {
             min: 1
         },
-        email: {
+        username: {
             min: 5
         },
         password: {
@@ -88,27 +88,27 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
 
-    let { email, password, firstName, lastName } = req.body;
+    let { username, password, firstName, lastName } = req.body;
     firstName = firstName.trim();
     lastName = lastName.trim();
-    email = email.toLowerCase();
+    username = username.toLowerCase();
 
-    return User.find({ email: email })
+    return User.find({ username: username })
         .countDocuments()
         .then(count => {
             if (count > 0) {
                 return Promise.reject({
                     code: 422,
                     reason: 'ValidationError',
-                    message: 'Email already associated with another account',
-                    location: 'email'
+                    message: 'username already associated with another account',
+                    location: 'username'
                 });
             }
             return User.hashPassword(password);
         })
         .then(hash => {
             return User.creat({
-                email,
+                username,
                 password: hash,
                 firstName,
                 lastName
