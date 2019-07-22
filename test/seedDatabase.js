@@ -53,7 +53,7 @@ function generateUserData() {
     return {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
-        email: faker.internet.email(),
+        username: faker.internet.userName(),
         password: "123Password",
         plainPassword: "123Password"
     };
@@ -75,7 +75,7 @@ const preAuthUser = function(user) {
 function seedBrewData(userIdArray) {
     return new Promise((resolve, reject) => {
         const seedData = [];
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 0; i <= 2; i++) {
             seedData.push(generateBrewData(userIdArray));
         }
         Brews.insertMany(seedData)

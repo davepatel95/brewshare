@@ -38,8 +38,6 @@ describe('Server', function() {
                 });
         });
     });
-
-    describe('')
 });
 
 
