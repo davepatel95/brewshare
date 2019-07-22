@@ -7,7 +7,8 @@ const morgan = require('morgan');
 const passport = require('passport');
 
 mongoose.Promise = global.Promise;
-const { PORT, DATABASE_URL } = require("./config");
+const { PORT, DATABASE_URL } = require('./config');
+const { JWT_SECRET } = require('./config');
 const app = express();
 
 const brewsRouter = require('./brews/router');

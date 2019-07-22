@@ -1,12 +1,14 @@
 'use strict';
 
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 
 const { User } = require('./models');
 
-router.post('/', (req, res) => {
+router.post('/', jsonParser, (req, res) => {
     const requiredFields = ['firstName', 'lastName', 'password', 'email'];
     const missingField = requiredFields.find(field => !(field in req.body));
     if (missingField) {
@@ -61,7 +63,7 @@ router.post('/', (req, res) => {
         },
         password: {
             min: 8,
-            max: 56
+            max: 72
         }
     };
     
@@ -71,7 +73,7 @@ router.post('/', (req, res) => {
     );
 
     const fieldTooLarge = Object.keys(fieldSizes).find(
-        field => 'max' in fieldSizes[field] && req.body[field].trim().length < fieldSizes[field].max
+        field => 'max' in fieldSizes[field] && req.body[field].trim().length > fieldSizes[field].max
     );
 
     if(fieldTooSmall || fieldTooLarge) {
