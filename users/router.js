@@ -8,8 +8,9 @@ const router = express.Router();
 
 const { User } = require('./models');
 
+
 router.post('/', jsonParser, (req, res) => {
-    const requiredFields = ['firstName', 'lastName', 'password', 'username'];
+    const requiredFields = ['usernmae', 'password', 'firstName', 'lastName'];
     const missingField = requiredFields.find(field => !(field in req.body));
     if (missingField) {
         console.log('Missing Field');
@@ -21,7 +22,7 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
     
-    const stringFields = ['FirstName', 'lastName', 'password', 'username'];
+    const stringFields = ['username', 'password', 'firstName', 'lastName' ];
     const nonStringField = stringFields.find(
         field => field in req.body && typeof req.body[field] !== 'string'
     );
@@ -107,7 +108,7 @@ router.post('/', jsonParser, (req, res) => {
             return User.hashPassword(password);
         })
         .then(hash => {
-            return User.creat({
+            return User.create({
                 username,
                 password: hash,
                 firstName,
