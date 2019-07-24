@@ -63,9 +63,9 @@ describe('Auth endpoints', function() {
             return chai
                 .request(app)
                 .post('/login')
-                .send({ username, password: 'ewfri' })
+                .send({ username: 'WrongUsername', password })
                 .then(() => 
-                    expect.fail(null, null, 'Request should fail')
+                    expect.fail(null, null, 'Request should not succeed')
                 )
                 .catch(err => {
                     if (err instanceof chai.AssertionError) {
@@ -76,8 +76,38 @@ describe('Auth endpoints', function() {
                     expect(res).to.have.status(422);
                 });
         });
+        it('Should reject requests with incorrect passwords', function() {
+            return chai
+                .request(app)
+                .post('/login')
+                .send({ username, password: 'WrongPassword' })
+                .then(() => expect.fail(null, null, 'Request should not succeed'))
+                .catch(err => {
+                    if (err instanceof chai.AssertionError) {
+                        throw err;
+                    }
 
-    })
+                    const res = err.response;
+                    expect(res).to.have.status(401);
+                });
+        });
+        it('Should return a valid auth token', function() {
+            return chai
+                .request(app)
+                .post('/login')
+                .send({ username, password })
+                .then(res => {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.be.an('object');
+                    const token = res.body.authToken;
+                    expect(token).to.be.a('string');
+                    const payload = jwt.verify(token, JWT_SECRET, {
+                        algorithm: ['HS256']
+                    });
+                    expect(payload.user.username).to.deep.equal(username);
+                });
+        });
+    });
     
     
 
