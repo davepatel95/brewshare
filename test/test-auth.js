@@ -95,15 +95,16 @@ describe('Auth endpoints', function() {
             return chai
                 .request(app)
                 .post('/login')
-                .send({ username, password })
+                .send({ username, password, firstName, lastName })
                 .then(res => {
-                    expect(res).to.have.status(200);
+
                     expect(res.body).to.be.an('object');
                     const token = res.body.authToken;
                     expect(token).to.be.a('string');
                     const payload = jwt.verify(token, JWT_SECRET, {
                         algorithm: ['HS256']
                     });
+                    console.log(payload);
                     expect(payload.user.username).to.deep.equal(username);
                 });
         });
