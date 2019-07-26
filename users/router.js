@@ -1,17 +1,18 @@
 'use strict';
-
-const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
 const express = require('express');
-const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const {User} = require('./models');
+
 const router = express.Router();
 
-const { User } = require('./models');
+const jsonParser = bodyParser.json();
 
-
+//Registers new user
 router.post('/', jsonParser, (req, res) => {
-    const requiredFields = ['usernmae', 'password', 'firstName', 'lastName'];
+    const requiredFields = ['usernmae', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
+
     if (missingField) {
         console.log('Missing Field');
         return res.status(422).json({
@@ -53,12 +54,6 @@ router.post('/', jsonParser, (req, res) => {
     }
 
     const fieldSizes = {
-        firstName: {
-            min: 1
-        },
-        lastName: {
-            min: 1
-        },
         username: {
             min: 5
         },
@@ -69,27 +64,27 @@ router.post('/', jsonParser, (req, res) => {
     };
     
     //
-    const fieldTooSmall = Object.keys(fieldSizes).find(
-        field => 'min' in fieldSizes[field] && req.body[field].trim().length < fieldSizes[field].min
+    const tooSmallField = Object.keys(sizedFields).find(
+        field => 'min' in sizedFields[field] && req.body[field].trim().length < sizedFields[field].min
     );
 
-    const fieldTooLarge = Object.keys(fieldSizes).find(
-        field => 'max' in fieldSizes[field] && req.body[field].trim().length > fieldSizes[field].max
+    const tooLargeField = Object.keys(sizedFields).find(
+        field => 'max' in sizedFields[field] && req.body[field].trim().length > sizedFields[field].max
     );
 
-    if(fieldTooSmall || fieldTooLarge) {
+    if(tooSmallField || tooLargeField) {
         console.log('Field too small or too large');
         return res.status(422).json({
             code: 422,
             reason: 'ValidationError',
-            message: fieldTooSmall
-            ? `${fieldTooSmall} must be at least ${fieldSizes[fieldTooSmall].min} characters long`
-            : `${fieldTooLarge} must be at most ${fieldSizes[fieldTooLarge].max} characters long`,
-            location: fieldTooSmall || fieldTooLarge
+            message: tooSmallField
+            ? `${tooSmallField} must be at least ${sizedFields[tooSmallField].min} characters long`
+            : `${tooLargeField} must be at most ${sizedFields[tooLargeField].max} characters long`,
+            location: tooSmallField || tooLargeField
         });
     }
 
-    let { username, password, firstName, lastName } = req.body;
+    let { username, password, firstName = '', lastName = '' } = req.body;
     firstName = firstName.trim();
     lastName = lastName.trim();
     username = username.toLowerCase();
@@ -98,6 +93,7 @@ router.post('/', jsonParser, (req, res) => {
         .countDocuments()
         .then(count => {
             if (count > 0) {
+                //rejects if username is already in use
                 return Promise.reject({
                     code: 422,
                     reason: 'ValidationError',
@@ -105,6 +101,7 @@ router.post('/', jsonParser, (req, res) => {
                     location: 'username'
                 });
             }
+            //otherwise, hashes password
             return User.hashPassword(password);
         })
         .then(hash => {
@@ -126,4 +123,4 @@ router.post('/', jsonParser, (req, res) => {
         });
 });
 
-module.exports =  router;
+module.exports =  {router};

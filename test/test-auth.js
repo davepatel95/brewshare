@@ -17,7 +17,7 @@ chai.use(expect);
 
 describe('Auth endpoints', function() {
     const username = 'exampleUser';
-    const password = 'examplepassword';
+    const password = 'examplePass';
     const firstName = 'Example';
     const lastName = 'User';
 
@@ -97,7 +97,7 @@ describe('Auth endpoints', function() {
                 .post('/login')
                 .send({ username, password, firstName, lastName })
                 .then(res => {
-
+                    console.log(res);
                     expect(res.body).to.be.an('object');
                     const token = res.body.authToken;
                     expect(token).to.be.a('string');
