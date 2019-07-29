@@ -10,7 +10,7 @@ const jsonParser = bodyParser.json();
 
 //Registers new user
 router.post('/', jsonParser, (req, res) => {
-    const requiredFields = ['usernmae', 'password'];
+    const requiredFields = ['username', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
 
     if (missingField) {
@@ -53,7 +53,7 @@ router.post('/', jsonParser, (req, res) => {
         });
     }
 
-    const fieldSizes = {
+    const sizedFields = {
         username: {
             min: 5
         },
@@ -123,4 +123,10 @@ router.post('/', jsonParser, (req, res) => {
         });
 });
 
-module.exports =  {router};
+router.get('/', (req, res) => {
+    return User.find()
+        .then(users => res.json(users.map(user => user.serialize())))
+        .catch(err => res.status(500).json({message: 'Internal server'}));
+});
+
+module.exports =  router;
