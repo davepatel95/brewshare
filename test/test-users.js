@@ -5,7 +5,7 @@ const chaiHttp = require('chai-http');
 
 const { app, runServer, closeServer } = require('../server');
 const { User } = require('../users/models');
-const { TEST_DATABASE_URL } = require('../config');
+const { DATABASE_URL } = require('../config');
 
 const expect = chai.expect;
 
@@ -22,7 +22,7 @@ describe('/user', function() {
     const lastNameB = 'UserB';
 
     before(function() {
-        return runServer(TEST_DATABASE_URL);
+        return runServer(DATABASE_URL);
     });
 
     after(function () {
@@ -33,7 +33,7 @@ describe('/user', function() {
     });
 
     afterEach( function() {
-        return User.remove({});
+        return User.deleteOne({});
     });
 
     describe('/users', function() {
@@ -47,22 +47,19 @@ describe('/user', function() {
                         firstName,
                         lastName
                     })
-                    .then(() => 
-                        expect.fail(null, null, 'Request should not succeed')
-                    )
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('missing field');
+                        expect(res.body.location).to.equal('username');
+                    })
                     .catch(err => {
                         if (err instanceof chai.AssertionError) {
                             throw err;
                         }
-
-                        const res = err.response;
-                        expect(res).to.have.status(422);
-                        expect(res.body.reason).to.equal('ValidationError');
-                        expect(res.body.message).to.equal('Missing field');
-                        expect(res.body.location).to.equal('username');
                     });
             });
-            
-        })
-    })
-}) 
+
+        });
+    });
+});

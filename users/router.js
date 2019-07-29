@@ -123,6 +123,7 @@ router.post('/', jsonParser, (req, res) => {
         });
 });
 
+//not to be included in final rendition
 router.get('/', (req, res) => {
     return User.find()
         .then(users => res.json(users.map(user => user.serialize())))
