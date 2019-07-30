@@ -59,7 +59,181 @@ describe('/user', function() {
                         }
                     });
             });
-
+            it('Should reject users with missing password', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('missing field');
+                        expect(res.body.location).to.equal('password');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with a non-string username', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username: 1234,
+                        password,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Incorrect field type: expected string');
+                        expect(res.body.location).to.equal('username');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with non-string password', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password: 1234,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Incorrect field type: expected string');
+                        expect(res.body.location).to.equal('password');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with non-string first name', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password,
+                        firstName: 1234,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Incorrect field type: expected string');
+                        expect(res.body.location).to.equal('firstName');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with non-string last name', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password,
+                        firstName,
+                        lastName: 1234
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Incorrect field type: expected string');
+                        expect(res.body.location).to.equal('lastName');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with non-trimmed username', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username: ` ${username} `,
+                        password,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Cannot start or end with whitespace');
+                        expect(res.body.location).to.equal('username');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with non-trimmed password', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password: ` ${password} `,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Cannot start or end with whitespace');
+                        expect(res.body.location).to.equal('password');
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with empty username', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username: '',
+                        password,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('Must be at least 5 characters long')
+                        expect(res.body.location).to.equal('username')
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            })
         });
     });
 });
