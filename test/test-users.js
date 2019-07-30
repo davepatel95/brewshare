@@ -16,10 +16,6 @@ describe('/user', function() {
     const password = 'examplePass';
     const firstName = 'Example';
     const lastName = 'User';
-    const usernameB = 'exampleUserB'
-    const passwordB = 'examplePassB';
-    const firstNameB = 'ExampleB';
-    const lastNameB = 'UserB';
 
     before(function() {
         return runServer(DATABASE_URL);
@@ -225,7 +221,7 @@ describe('/user', function() {
                     .then(function(res) {
                         expect(res).to.have.status(422);
                         expect(res.body.reason).to.equal('ValidationError');
-                        expect(res.body.message).to.equal('Must be at least 5 characters long')
+                        expect(res.body.message).to.equal('username must be at least 5 characters long')
                         expect(res.body.location).to.equal('username')
                     })
                     .catch(err => {
@@ -233,7 +229,114 @@ describe('/user', function() {
                             throw err;
                         }
                     });
-            })
+            });
+            it('Should reject users with password less than 8 characters', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password: '13fsd',
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('password must be at least 8 characters long')
+                        expect(res.body.location).to.equal('password')
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with password greater than 72 characters', function() {
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password: new Array(73).fill('a').join(''),
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(422);
+                        expect(res.body.reason).to.equal('ValidationError');
+                        expect(res.body.message).to.equal('password must be at most 72 characters long')
+                        expect(res.body.location).to.equal('password')
+                    })
+                    .catch(err => {
+                        if (err instanceof chai.AssertionError) {
+                            throw err;
+                        }
+                    });
+            });
+            it('Should reject users with duplicate username', function () {
+                this.timeout(5000);
+                return User.create({
+                  username: 'janedoe',
+                  password,
+                  firstName,
+                  lastName
+                })
+                  .then(() =>
+                    chai.request(app).post('/users').send({
+                      username: 'janedoe',
+                      password,
+                      firstName,
+                      lastName
+                    })
+                  )
+                  .then(function(res) {
+                    expect(res).to.have.status(422);
+                    expect(res.body.reason).to.equal('ValidationError');
+                    expect(res.body.message).to.equal(
+                      'username already associated with another account'
+                    );
+                    expect(res.body.location).to.equal('username');
+                  })
+                  .catch(err => {
+                    if (err instanceof chai.AssertionError) {
+                        throw err;
+                    }
+                });
+                  
+              });
+            it('Should create a new user', function() {
+                this.timeout(5000);
+                return chai
+                    .request(app)
+                    .post('/users')
+                    .send({
+                        username,
+                        password,
+                        firstName,
+                        lastName
+                    })
+                    .then(function(res) {
+                        expect(res).to.have.status(201);
+                        expect(res.body).to.be.an('object');
+                        expect(res.body).to.have.keys(
+                            'username',
+                            'firstName',
+                            'lastName'
+                        )
+                        expect(res.body.username).to.equal(username);
+                        expect(res.body.firstName).to.equal(firstName);
+                        expect(res.body.lastName).to.equal(lastName);
+                        return User.findOne({
+                            username
+                        });
+                    })
+                    .then(user => {
+                        expect(user).to.not.be.null;
+                        expect(user.firstName).to.equal(firstName);
+                        expect(user.lastName).to.equal(lastName);
+                    });
+            });
         });
     });
 });

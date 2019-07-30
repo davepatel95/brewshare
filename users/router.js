@@ -87,7 +87,7 @@ router.post('/', jsonParser, (req, res) => {
     let { username, password, firstName = '', lastName = '' } = req.body;
     firstName = firstName.trim();
     lastName = lastName.trim();
-    username = username.toLowerCase();
+
 
     return User.find({ username: username })
         .countDocuments()
