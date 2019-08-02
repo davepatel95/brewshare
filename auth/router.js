@@ -26,10 +26,9 @@ router.post('/login', localAuth, (req, res) => {
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-//refreshes JWT for one with later expiration
-router.post('/refresh', jwtAuth, (req, res) => {
-    const authToken = createAuthToken(req.user);
-    res.json({ authToken });
+router.get('/logout', function(req, res) {
+    res.redirect('/');
+    alert('logging out');
 });
 
 module.exports =  router;
