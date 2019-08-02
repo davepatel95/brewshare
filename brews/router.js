@@ -28,8 +28,12 @@ router.get('/', jwtAuth, (req, res) => {
         });
 });
 
+// GET requests to /brews
+
+
+// POST requests to /brews
 router.post('/', (req, res) => {
-    const requiredFields = ['title', 'content', 'author'];
+    const requiredFields = ['title', 'roasters', 'beansOrigin', 'flavorNotes', 'brewMethod', 'description'];
     for (let i = 0; i < requiredFields.length; i++) {
       const field = requiredFields[i];
       if (!(field in req.body)) {
@@ -48,8 +52,30 @@ router.post('/', (req, res) => {
             brewMethod: req.body.brewMethod,
             description: req.body.description
         })
-        .then()
-})
+        .then(brew => res.status(201).json(brew.serialize()))
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({message: 'Internal Server Error'});
+        });
+});
+
+// PUT requests by id
+router.put('/brews/:id', (req, res) => {
+    Brew
+        .findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            // asks mongoose to return updated version of document instead pre-updated one
+            {new: true},
+            (err, brew) => {
+                if (err) return res.status(500).send(err);
+                return res.send(brew);
+            }
+        )
+});
+
+
+// DELETE request by id
 // router.post('/', async (req, res) => {
 //     const brew = new Brew(req.body);
 //     try {
