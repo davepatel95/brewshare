@@ -13,13 +13,13 @@ const {Brew} = require('./models');
 passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/', jwtAuth, (req, res) => {
+router.get('/', (req, res) => {
      Brew
         .find()
         .then(brews => {
             res.json({
                 brews: brews.map(
-                    (brew) => brew.serialize())
+                    (brew => brew.serialize()))
             });
         })
         .catch(err => {
