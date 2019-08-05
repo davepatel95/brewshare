@@ -62,7 +62,7 @@ function generateUserData() {
 const preAuthUser = function(user) {
     const plainPassword = "123Password";
     return {
-        username: user.username,
+        email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         plainPassword: plainPassword,
@@ -92,7 +92,6 @@ function seedBrewData(userIdArray) {
 function generateBrewData() {
     return {
         title: faker.name.title(),
-        author: faker.name.firstName() + faker.name.lastName(),
         roasters: faker.lorem.words(),
         beansOrigin: faker.address.country(),
         flavorNotes: generateFlavorNotes(),

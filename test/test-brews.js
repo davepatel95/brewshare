@@ -43,6 +43,8 @@ const token = jwt.sign(
 );
 const decoded = jwt.decode(token);
 
+const { seed}
+
 chai.use(chaiHttp);
 
 describe('/brews', function() {
@@ -52,7 +54,6 @@ describe('/brews', function() {
 
     beforeEach(function() {
         return seedDatabase();
-        this.timeout(5000);
     });
 
     afterEach(function() {
@@ -63,7 +64,7 @@ describe('/brews', function() {
         return closeServer();
     });
 
-    describe('GET endpoint', function() {
+    describe('GET all endpoint', function() {
         it('should return all brew reviews', function() {
             let res;
             return chai
@@ -72,34 +73,11 @@ describe('/brews', function() {
                 .then(function(_res) {
                     res = _res;
                     expect(res).to.have.status(200);
-                    expect(res).to.be.json;
-                    expect(res.body.brews).to.have.length.of.at.least(1);
-                    return Brew.count();  
+                    expect(res).to.be.json();
+                    return Brew.count();
                 })
                 .then(function(count) {
-                    console.log(count);
-                    expect(res.body.brews).to.have.lengthOf(count);
-                });
-        });
-        it('Should retrieve reflection by id', function() {
-            let resBrew;
-            return chai.request(app)
-                .get('/brews')
-                .then(function(res) {
-                    expect(res).to.have.status(200);
-                    expect(res).to.be.json;
-                    expect(res.body.brews).to.be.a('array');
-                    expect(res.body.brews).to.have.length.of.at.least(1);
-                    res.body.brews.forEach(function(brew) {
-                        expect(brew).to.be.a('object');
-                        expect(brew).to.include.keys('id', 'author', 'title', 'roasters', 'beansOrigin', 'flavorNotes', 'brewMethod', 'description');
-                    });
-                    resBrew = res.body.brews[0];
-                    return Brew.findById(resBrew.id);
-                })
-                .then(function(brew) {
-                    expect(resBrew.title).to.equal(brew.title);
-                    expect(resBrew.author).to.equal(brew.author);
+                    expect(res.body).to.have.lengthOf(count);
                 });
         });
     });

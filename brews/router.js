@@ -13,7 +13,6 @@ const {Brew} = require('./models');
 passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// GET requests to /brews
 router.get('/', (req, res) => {
      Brew
         .find()
@@ -29,19 +28,12 @@ router.get('/', (req, res) => {
         });
 });
 
-router.get('/:id', (req, res) => {
-    Brew
-        .findById(req.params.id)
-        .then(brew => res.json(brew))
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({message: 'Internal Server Error'});
-        });
-});
+// GET requests to /brews
+
 
 // POST requests to /brews
 router.post('/', (req, res) => {
-    const requiredFields = ['title', 'author', 'roasters', 'beansOrigin', 'flavorNotes', 'brewMethod', 'description'];
+    const requiredFields = ['title', 'roasters', 'beansOrigin', 'flavorNotes', 'brewMethod', 'description'];
     for (let i = 0; i < requiredFields.length; i++) {
       const field = requiredFields[i];
       if (!(field in req.body)) {
@@ -54,7 +46,6 @@ router.post('/', (req, res) => {
     Brew
         .create({
             title: req.body.title,
-            author: req.body.author,
             roasters: req.body.roasters,
             beansOrigin: req.body.beansOrigin,
             flavorNotes: req.body.flavorNotes,
