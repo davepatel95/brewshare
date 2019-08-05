@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 
 const brewSchema = new Schema({
     title:  {type: String, required: true},
+    author: {type: String, required: true},
     roasters: {type: String, required: true},
     beansOrigin: {type: String, required: true},
     flavorNotes: {type: [String], default: undefined},
@@ -17,6 +18,7 @@ brewSchema.methods.serialize = function() {
     return {
         id: this._id,
         title: this.title,
+        author: this.author,
         roasters: this.roasters,
         beansOrigin: this.beansOrigin,
         flavorNotes: this.flavorNotes,
