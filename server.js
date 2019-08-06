@@ -11,7 +11,7 @@ const { PORT, DATABASE_URL } = require('./config');
 const { JWT_SECRET } = require('./config');
 const app = express();
 
-const brewsRouter = require('./brews/router');
+const brewsRouter  = require('./brews/router');
 const authRouter = require('./auth/router');
 const userRouter = require('./users/router');
 const { localStrategy, jwtStrategy } = require('./auth/strategies');
@@ -34,6 +34,7 @@ let server;
 function runServer(DATABASE_URL, port = PORT,) {
     return new Promise((resolve, reject) => {
         mongoose.set('useCreateIndex', true);
+        mongoose.set('useFindAndModify', false);
         mongoose.connect(
             DATABASE_URL, { useNewUrlParser: true}, 
             err => {

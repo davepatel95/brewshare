@@ -31,4 +31,4 @@ router.get('/logout', function(req, res) {
     alert('logging out');
 });
 
-module.exports =  router;
+module.exports =  router, createAuthToken;
