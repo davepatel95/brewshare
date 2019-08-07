@@ -6,7 +6,7 @@ const chaiHttp = require('chai-http');
 const { Brew } = require('../brews/models');
 const { User } = require('../users/models');
 
-const { createAuthToken } = require('../auth/router');
+const createAuthToken = require('../auth/router');
 const { runServer, app, closeServer } = require('../server');
 const { TEST_DATABASE_URL } = require('../config');
 const { 
@@ -52,7 +52,6 @@ describe('/brews', function() {
 
     beforeEach(function() {
         return seedDatabase();
-        this.timeout(5000);
     });
 
     afterEach(function() {
@@ -74,11 +73,11 @@ describe('/brews', function() {
                     expect(res).to.have.status(200);
                     expect(res).to.be.json;
                     expect(res.body.brews).to.have.length.of.at.least(1);
-                    return Brew.count();  
+                    return Brew.countDocuments();  
                 })
-                .then(function(count) {
-                    console.log(count);
-                    expect(res.body.brews).to.have.lengthOf(count);
+                .then(function(countDocuments) {
+                    console.log(countDocuments);
+                    expect(res.body.brews).to.have.lengthOf(countDocuments);
                 });
         });
         it('Should retrieve reflection by id', function() {
@@ -100,6 +99,76 @@ describe('/brews', function() {
                 .then(function(brew) {
                     expect(resBrew.title).to.equal(brew.title);
                     expect(resBrew.author).to.equal(brew.author);
+                });
+        });
+    });
+
+    describe('POST endpoint', function() {
+        it('should add new brew review', function() {
+            const newBrew = generateBrewData();
+            return chai.request(app)
+                .post('/brews')
+                .send(newBrew)
+                .then(function(res) {
+                    expect(res).to.have.status(201);
+                    expect(res).to.be.json;
+                    expect(res.body).to.be.a('object');
+                    expect(res.body).to.include.keys('id', 'title', 'author', 'roasters', 'beansOrigin', 'flavorNotes', 'brewMethod', 'description');
+                    expect(res.body.author).to.equal(newBrew.author);
+                    expect(res.body.title).to.equal(newBrew.title);
+                    expect(res.body.roasters).to.equal(newBrew.roasters);
+                    return Brew.findById(res.body.id);
+                })
+                .then(function(brew) {
+                    expect(brew.title).to.equal(newBrew.title);
+                    expect(brew.author).to.equal(newBrew.author);
+                });
+        });
+    });
+
+    describe('PUT endpoint', function() {
+        it('should update fields sent over by user', function() {
+            const updateData = {
+                title: 'Boing Boing from GGET',
+                description: 'it is list fam'
+            };
+            return Brew
+                .findOne()
+                .then(function(brew) {
+                    updateData.id = brew.id;
+
+                    return chai.request(app)
+                        .put(`/brews/${brew.id}`)
+                        .send(updateData);
+                })
+                .then(function(res) {
+                    expect(res).to.have.status(200);
+                    return Brew.findByIdAndUpdate(updateData.id);
+                })
+                .then(function(brew) {
+                    expect(brew.title).to.equal(updateData.title);
+                    expect(brew.description).to.equal(updateData.description);
+                });
+        });
+    });
+
+    describe('DELETE endpoint', function() {
+        it('should delete brew review by id', function() {
+           let brew;
+           return Brew
+                .findOne()
+                .then(function(_brew) {
+                    brew = _brew;
+                    return chai
+                        .request(app)
+                        .delete(`/brews/${brew.id}`);
+                })
+                .then(function(res) {
+                    expect(res).to.have.status(204);
+                    return Brew.findById(brew.id);
+                })
+                .then(function(res) {
+                    console.log(res);
                 });
         });
     });
