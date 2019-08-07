@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const faker = require('faker');
 
-const { Brews } = require('../brews/models');
+const { Brew } = require('../brews/models');
 const { User } = require('../users/models');
 
 function seedDatabase() {
@@ -53,7 +53,7 @@ function generateUserData() {
     return {
         firstName: faker.name.firstName(),
         lastName: faker.name.lastName(),
-        email: faker.internet.email(),
+        username: faker.internet.userName(),
         password: "123Password",
         plainPassword: "123Password"
     };
@@ -62,7 +62,7 @@ function generateUserData() {
 const preAuthUser = function(user) {
     const plainPassword = "123Password";
     return {
-        email: user.email,
+        username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         plainPassword: plainPassword,
@@ -75,10 +75,10 @@ const preAuthUser = function(user) {
 function seedBrewData(userIdArray) {
     return new Promise((resolve, reject) => {
         const seedData = [];
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 0; i <= 2; i++) {
             seedData.push(generateBrewData(userIdArray));
         }
-        Brews.insertMany(seedData)
+        Brew.insertMany(seedData)
             .then(res => {
                 resolve(res);
             })
@@ -92,6 +92,7 @@ function seedBrewData(userIdArray) {
 function generateBrewData() {
     return {
         title: faker.name.title(),
+        author: faker.name.firstName() + faker.name.lastName(),
         roasters: faker.lorem.words(),
         beansOrigin: faker.address.country(),
         flavorNotes: generateFlavorNotes(),

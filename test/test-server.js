@@ -39,38 +39,4 @@ describe('Server', function() {
         });
     });
 
-    describe('')
 });
-
-
-
-
-
-
-
-
-
-
-
-describe('create page', function() {
-    it("should send html for create brew page", function() {
-        return chai
-            .request(app)
-            .get('/')
-            .then(function(res) {
-                expect(res).to.have.status(200);
-            });
-    });
-});
-
-describe('login page', function() {
-    it("should send html for login page", function() {
-        return chai
-            .request(app)
-            .get("/login.html")
-            .then(function(res) {
-                expect(res).to.have.status(200);
-                expect(res).to.be.html;
-            });
-    });
-})

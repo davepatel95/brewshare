@@ -1,14 +1,18 @@
 'use strict';
-
 const express = require('express');
-const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const {User} = require('./models');
+
 const router = express.Router();
 
-const { User } = require('./models');
+const jsonParser = bodyParser.json();
 
-router.post('/', (req, res) => {
-    const requiredFields = ['firstName', 'lastName', 'password', 'email'];
+//Registers new user
+router.post('/', jsonParser, (req, res) => {
+    const requiredFields = ['username', 'password'];
     const missingField = requiredFields.find(field => !(field in req.body));
+
     if (missingField) {
         console.log('Missing Field');
         return res.status(422).json({
@@ -19,7 +23,7 @@ router.post('/', (req, res) => {
         });
     }
     
-    const stringFields = ['FirstName', 'lastName', 'password', 'email'];
+    const stringFields = ['username', 'password', 'firstName', 'lastName' ];
     const nonStringField = stringFields.find(
         field => field in req.body && typeof req.body[field] !== 'string'
     );
@@ -34,7 +38,7 @@ router.post('/', (req, res) => {
         });
     }
 
-    const explicitlyTrimmedFields = ['email', 'password'];
+    const explicitlyTrimmedFields = ['username', 'password'];
     const nonTrimmedField = explicitlyTrimmedFields.find(
         field => req.body[field].trim() !== req.body[field]
     );
@@ -49,64 +53,60 @@ router.post('/', (req, res) => {
         });
     }
 
-    const fieldSizes = {
-        firstName: {
-            min: 1
-        },
-        lastName: {
-            min: 1
-        },
-        email: {
+    const sizedFields = {
+        username: {
             min: 5
         },
         password: {
             min: 8,
-            max: 56
+            max: 72
         }
     };
     
     //
-    const fieldTooSmall = Object.keys(fieldSizes).find(
-        field => 'min' in fieldSizes[field] && req.body[field].trim().length < fieldSizes[field].min
+    const tooSmallField = Object.keys(sizedFields).find(
+        field => 'min' in sizedFields[field] && req.body[field].trim().length < sizedFields[field].min
     );
 
-    const fieldTooLarge = Object.keys(fieldSizes).find(
-        field => 'max' in fieldSizes[field] && req.body[field].trim().length < fieldSizes[field].max
+    const tooLargeField = Object.keys(sizedFields).find(
+        field => 'max' in sizedFields[field] && req.body[field].trim().length > sizedFields[field].max
     );
 
-    if(fieldTooSmall || fieldTooLarge) {
+    if(tooSmallField || tooLargeField) {
         console.log('Field too small or too large');
         return res.status(422).json({
             code: 422,
             reason: 'ValidationError',
-            message: fieldTooSmall
-            ? `${fieldTooSmall} must be at least ${fieldSizes[fieldTooSmall].min} characters long`
-            : `${fieldTooLarge} must be at most ${fieldSizes[fieldTooLarge].max} characters long`,
-            location: fieldTooSmall || fieldTooLarge
+            message: tooSmallField
+            ? `${tooSmallField} must be at least ${sizedFields[tooSmallField].min} characters long`
+            : `${tooLargeField} must be at most ${sizedFields[tooLargeField].max} characters long`,
+            location: tooSmallField || tooLargeField
         });
     }
 
-    let { email, password, firstName, lastName } = req.body;
+    let { username, password, firstName = '', lastName = '' } = req.body;
     firstName = firstName.trim();
     lastName = lastName.trim();
-    email = email.toLowerCase();
 
-    return User.find({ email: email })
+
+    return User.find({ username: username })
         .countDocuments()
         .then(count => {
             if (count > 0) {
+                //rejects if username is already in use
                 return Promise.reject({
                     code: 422,
                     reason: 'ValidationError',
-                    message: 'Email already associated with another account',
-                    location: 'email'
+                    message: 'username already associated with another account',
+                    location: 'username'
                 });
             }
+            //otherwise, hashes password
             return User.hashPassword(password);
         })
         .then(hash => {
-            return User.creat({
-                email,
+            return User.create({
+                username,
                 password: hash,
                 firstName,
                 lastName
@@ -121,6 +121,13 @@ router.post('/', (req, res) => {
             }
             res.status(500).json({ code: 500, message: 'Internal Server Error' });
         });
+});
+
+//not to be included in final rendition
+router.get('/', (req, res) => {
+    return User.find()
+        .then(users => res.json(users.map(user => user.serialize())))
+        .catch(err => res.status(500).json({message: 'Internal server'}));
 });
 
 module.exports =  router;

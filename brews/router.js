@@ -13,13 +13,14 @@ const {Brew} = require('./models');
 passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/', jwtAuth, (req, res) => {
+// GET requests to /brews
+router.get('/', (req, res) => {
      Brew
         .find()
         .then(brews => {
             res.json({
                 brews: brews.map(
-                    (brew) => brew.serialize())
+                    (brew => brew.serialize()))
             });
         })
         .catch(err => {
@@ -28,8 +29,19 @@ router.get('/', jwtAuth, (req, res) => {
         });
 });
 
+router.get('/:id', (req, res) => {
+    Brew
+        .findById(req.params.id)
+        .then(brew => res.json(brew))
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({message: 'Internal Server Error'});
+        });
+});
+
+// POST requests to /brews
 router.post('/', (req, res) => {
-    const requiredFields = ['title', 'content', 'author'];
+    const requiredFields = ['title', 'author', 'roasters', 'beansOrigin', 'flavorNotes', 'brewMethod', 'description'];
     for (let i = 0; i < requiredFields.length; i++) {
       const field = requiredFields[i];
       if (!(field in req.body)) {
@@ -42,14 +54,47 @@ router.post('/', (req, res) => {
     Brew
         .create({
             title: req.body.title,
+            author: req.body.author,
             roasters: req.body.roasters,
             beansOrigin: req.body.beansOrigin,
             flavorNotes: req.body.flavorNotes,
             brewMethod: req.body.brewMethod,
             description: req.body.description
         })
-        .then()
-})
+        .then(brew => res.status(201).json(brew.serialize()))
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({message: 'Internal Server Error'});
+        });
+});
+
+// PUT requests by id
+function getBrew(id) {
+    let brew = Brew.find({_id:id});
+    return brew;
+}
+router.put('/:id', (req,res) => {
+    Brew.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new: true},
+        (err, brew) => {
+            if(err) return res.status(500).send(err);
+            return res.send(brew);
+        }
+    )
+});
+
+// DELETE request by id
+router.delete('/:id', (req, res) => {
+    Brew
+        .findByIdAndDelete(req.params.id)
+        .then(brew => res.status(204).end())
+        .catch(err => {
+            res.status(500).json({ message: 'Internal Server Error'});
+        });
+});
+
 // router.post('/', async (req, res) => {
 //     const brew = new Brew(req.body);
 //     try {
