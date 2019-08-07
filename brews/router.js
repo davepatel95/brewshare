@@ -69,22 +69,32 @@ router.post('/', (req, res) => {
 });
 
 // PUT requests by id
-router.put('/brews/:id', (req, res) => {
-    Brew
-        .findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            // asks mongoose to return updated version of document instead pre-updated one
-            {new: true},
-            (err, brew) => {
-                if (err) return res.status(500).send(err);
-                return res.send(brew);
-            }
-        )
+function getBrew(id) {
+    let brew = Brew.find({_id:id});
+    return brew;
+}
+router.put('/:id', (req,res) => {
+    Brew.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {new: true},
+        (err, brew) => {
+            if(err) return res.status(500).send(err);
+            return res.send(brew);
+        }
+    )
 });
 
-
 // DELETE request by id
+router.delete('/:id', (req, res) => {
+    Brew
+        .findByIdAndDelete(req.params.id)
+        .then(brew => res.status(204).end())
+        .catch(err => {
+            res.status(500).json({ message: 'Internal Server Error'});
+        });
+});
+
 // router.post('/', async (req, res) => {
 //     const brew = new Brew(req.body);
 //     try {
