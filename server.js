@@ -36,7 +36,7 @@ function runServer(DATABASE_URL, port = PORT,) {
         mongoose.set('useCreateIndex', true);
         mongoose.set('useFindAndModify', false);
         mongoose.connect(
-            DATABASE_URL, { useNewUrlParser: true}, 
+            'mongodb+srv://evadletap:DLjDyQQ2QJp1SDUv@cluster0-xiteu.mongodb.net/BrewShare?retryWrites=true&w=majority', { useNewUrlParser: true}, 
             err => {
                 if (err) {
                     return reject(err);
