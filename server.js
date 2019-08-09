@@ -31,12 +31,11 @@ app.use('*', (req, res) => {
 });
 
 let server;
-function runServer(DATABASE_URL, port = PORT,) {
+function runServer(databaseUrl = DATABASE_URL, port = PORT,) {
     return new Promise((resolve, reject) => {
         mongoose.set('useCreateIndex', true);
         mongoose.set('useFindAndModify', false);
-        mongoose.connect(
-            'mongodb+srv://evadletap:DLjDyQQ2QJp1SDUv@cluster0-xiteu.mongodb.net/BrewShare?retryWrites=true&w=majority', { useNewUrlParser: true}, 
+        mongoose.connect(databaseUrl, { useNewUrlParser: true}, 
             err => {
                 if (err) {
                     return reject(err);
