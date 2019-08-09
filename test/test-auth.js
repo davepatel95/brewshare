@@ -8,7 +8,7 @@ const { User } = require('../users/models');
 
 const { app, runServer, closeServer } = require('../server');
 const { seedBrewData, tearDownDb } = require('./seedDatabase');
-const { DATABASE_URL } = require('../config');
+const { TEST_DATABASE_URL } = require('../config');
 const { JWT_SECRET } = require('../config');
 
 const expect = chai.expect;
@@ -22,7 +22,7 @@ describe('Auth endpoints', function() {
     const lastName = 'User';
 
     before(function() {
-        return runServer(DATABASE_URL);
+        return runServer(TEST_DATABASE_URL);
     });
 
     beforeEach(function() {
